@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { GameState } from '../reducers.ts';
-import { FRAME_IN_SECOND, CAMERA_SIZE, MAP_EDGE_LENGTH } from '../constants.ts';
+import { FRAME_IN_SECOND, CAMERA_SIZE, MAP_EDGE_LENGTH, FINAL_TILE_EDGE_LENGTH } from '../constants.ts';
 import { ON_FRAME_ACTION, START_GAME_ACTION, onKeyPressed, lookAt } from '../actions.ts';
 import * as ReactModal from 'react-modal';
 import Tile, { TileTypeEnum } from '../gameObjects/tile.ts';
@@ -87,17 +87,20 @@ class Game extends React.Component<ICommonProps & IGameProps, IGameState> {
 		let { msgs, gameState, tiles, onStartGameBtnClick, mapCameraOffset: [coX, coY] } = this.props;
 		let { mouseEnteredTilePos: [hX, hY] } = this.state,
 			hoverTile = hX == -1 || hY == -1 ? null : tiles[hX][hY];
+		let PC_SCREEN = window.innerHeight < window.innerWidth;
 		return (
 			<div>
 				<div className="container-fluid">
-					<div className="col-lg-8">
-						<ul>{msgs.map(m => <li>m</li>) }</ul>
-					</div>
-					<div className="col-lg-9">
+					<div className="map" style={{
+							width: PC_SCREEN ? '100vh' : '100vw',
+							height: PC_SCREEN ? '100vh' : '100vw'
+						}}>
 						<div className="row">
 							{tiles.slice(coX, coX + CAMERA_SIZE).map((col, cx) => col.slice(coY, coY + CAMERA_SIZE)
-								.map((t, cy) => <div className="col-xs-1"
+								.map((t, cy) => <div className="tile"
 									style={{
+										width: FINAL_TILE_EDGE_LENGTH,
+										height: FINAL_TILE_EDGE_LENGTH,
 										backgroundColor: this.state.showGrayLevel ? t.getGrayLevelColor() : t.getTileColor(),
 									}}
 									data-x={coX+cx}
@@ -110,7 +113,7 @@ class Game extends React.Component<ICommonProps & IGameProps, IGameState> {
 							)}
 						</div>
 					</div>
-					<div className="col-lg-8">
+					<div className="operationPanel">
 						<input type='checkbox' checked={this.state.showGrayLevel}
 							onClick={ev => this.setState({showGrayLevel: (ev.currentTarget as HTMLInputElement).checked})} />
 						{hoverTile == null ? null :
@@ -122,6 +125,7 @@ class Game extends React.Component<ICommonProps & IGameProps, IGameState> {
 								<li>TileType: {TileTypeEnum[hoverTile.getTileType()]}</li>
 							</ul>
 						}
+						<ul>{msgs.map(m => <li>m</li>) }</ul>
 					</div>
 				</div>
 				<ReactModal isOpen={gameState === GameState.Welcome} style={customStyles} >
@@ -139,7 +143,7 @@ let TranslatedGame = translate()(Game);
 const mapStateToProps = (state: any) => {
 	return {
 		gameState: state.gameState as GameState,
-		time: state.time as number,
+		//time: state.time as number,
 		msgs: state.msgs as string[],
 		tiles: state.tiles as Tile[][],
 		mapCameraOffset: state.mapCameraOffset as [number, number]

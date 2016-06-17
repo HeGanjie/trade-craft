@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tsc && ava -s ./dist/test.js"
+    "test": "tsc && ava -s ./dist/test.js",
+    "watch": "node_modules/.bin/webpack --watch --progress"
   },
   "author": "Bruce He",
   "license": "UNLICENSED",
