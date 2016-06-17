@@ -7,7 +7,8 @@ const inited = i18next
     .use(XHR)
     .use(LanguageDetector)
     .init({
-        "debug": true,
+        "debug": false,
+        "load": "currentOnly",
         "fallbackLng": "en",
         "backend": {
             "allowMultiLoading": false,

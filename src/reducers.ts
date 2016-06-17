@@ -1,35 +1,33 @@
 import * as Immutable from 'immutable';
 import * as _ from 'lodash';
 import i18n from './i18n.ts';
+import Tile from './gameObjects//tile.ts';
+import Person from './gameObjects/person.ts';
+import { FRAME_IN_SECOND, MAP_EDGE_LENGTH } from './constants.ts';
 
-export const FRAME_IN_SECOND = 1;
-
-export const MapEnum = {
-	Flatland: 1,
-	Forest: 10,
+export enum GameState {
+	Welcome,
+	Playing,
+	PauseDialog,
+	SaveLoadDialog
 }
 
-export const LocationTypeEnum = {
-	Area: 1,
-	House: 2,
-	Well: 3,
-	Inn: 4,
-	Market: 5,
-	Field: 6,
-	Orchard: 7,
-	Pasture: 8,
-}
-
-const worldInitState = Immutable.Map({
-	UILocationId: 0,
-	LocationTree: {},
-	PersonList: [],
-});
-
-export const world = (state = worldInitState, action: any) => {
+const gameState = (state = GameState.Welcome, action: any) => {
 	switch (action.type) {
 		case 'START_GAME':
-		let heroName = prompt(i18n.t('asking.hreoName'));
+		return GameState.Playing;
+
+		default:
+		return state;
+	}
+}
+
+const mapCameraOffset = (state = [0, 0], action: any) => {
+	switch (action.type) {
+		case 'OFFSET_CAMERA':
+		return action.point;
+
+		case 'KEY_PRESSED':
 		return state;
 
 		default:
@@ -37,31 +35,48 @@ export const world = (state = worldInitState, action: any) => {
 	}
 }
 
-const timeInitState = Immutable.fromJS({
-	gameTime: 0,
-});
+const selectedTilePos = (state: [number, number], action: any) => {
 
-export const time = (state = timeInitState, action: any) => {
+}
+
+const tiles = (state: Tile[][] = [], action: any) => {
+	switch (action.type) {
+		case 'START_GAME':
+		return Tile.createWorld(MAP_EDGE_LENGTH);
+
+		default:
+		return state;
+	}
+}
+
+const msgs = (state: string[] = [], action: any) => {
+	switch (action.type) {
+		case 'START_GAME':
+		return [];
+
+		default:
+		return state;
+	}
+}
+
+const person = (state: Person[] = [], action: any) => {
+	switch (action.type) {
+		case 'START_GAME':
+		// let heroName = prompt(i18n.t('asking.hreoName'));
+		return state;
+
+		default:
+		return state;
+	}
+}
+
+const time = (state = 0, action: any) => {
 	switch (action.type) {
 		case 'ON_FRAME':
-		return state.set('gameTime', state.get('gameTime') + 1000/FRAME_IN_SECOND);
+		return state + 1000 / FRAME_IN_SECOND;
 
 		case 'START_GAME':
-		return state.set('gameTime', 0);
-
-		default:
-		return state;
-	}
-}
-
-const boardInitState = Immutable.Map({
-	msgs: []
-});
-
-export const board = (state = timeInitState, action: any) => {
-	switch (action.type) {
-		case 'START_GAME':
-		return state.set('msgs', Immutable.List());
+		return 0;
 
 		default:
 		return state;
@@ -69,5 +84,5 @@ export const board = (state = timeInitState, action: any) => {
 }
 
 import { combineReducers } from 'redux';
-const reducer = combineReducers({ world, time, board });
+const reducer = combineReducers({ gameState, mapCameraOffset, tiles, msgs, person, time });
 export default reducer;

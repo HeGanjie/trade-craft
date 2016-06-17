@@ -1,10 +1,14 @@
 {
   "globalDependencies": {
     "i18next": "registry:dt/i18next#2.3.4+20160521153543",
-    "lodash": "registry:dt/lodash#3.10.0+20160330154726",
+    "keyboardjs": "registry:dt/keyboardjs#2.2.0+20160405205951",
     "react": "registry:dt/react#0.14.0+20160602151522",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "react-redux": "registry:dt/react-redux#4.4.0+20160501125835",
-    "redux": "registry:dt/redux#3.3.1+20160326112656"
+    "redux": "registry:dt/redux#3.3.1+20160326112656",
+    "redux-thunk": "registry:dt/redux-thunk#2.0.1+20160317120654"
+  },
+  "dependencies": {
+    "lodash": "registry:npm/lodash#4.0.0+20160416211519"
   }
 }
